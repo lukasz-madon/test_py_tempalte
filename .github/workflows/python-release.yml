@@ -1,0 +1,45 @@
+---
+name: Python Package Semantic Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    if: |
+      ! contains(github.repository, 'template') &&
+      ! contains(github.event.head_commit.message, 'Initial commit')
+    runs-on: ubuntu-latest
+    concurrency: release
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            files.pythonhosted.org:443
+            github.com:443
+            pypi.fury.io:443
+            pypi.org:443
+            test.pypi.org:443
+      - name: Checkout repository
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+        with:
+          fetch-depth: 0
+      - name: Setup Dependencies
+        uses: ./.github/actions/setup-poetry
+      - name: Setup git credentials
+        uses: ./.github/actions/setup-git
+      - name: Prepare semantic release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: poetry run semantic-release publish
+      - name: Deploy to registry
+        run: |
+          poetry config repositories.${{ secrets.PYPI_NAME }} ${{ secrets.PYPI_URL }}
+          poetry config pypi-token.${{ secrets.PYPI_NAME }} ${{ secrets.PYPI_TOKEN }}
+          poetry publish --build --repository ${{ secrets.PYPI_NAME }}

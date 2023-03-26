@@ -1,0 +1,34 @@
+---
+name: Markdown Linter
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - '!CHANGELOG.md'
+
+permissions:
+  checks: write
+  contents: write
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@1f99358870fe1c846a3ccba386cc2b2246836776 # v2.2.1
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+      - name: Checkout repository
+        uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+        with:
+          fetch-depth: 0
+      - name: Run markdownlint
+        uses: nosborn/github-action-markdown-cli@5cfe13755d7cdc2d0d01b69c7900cfd3fa37f4a4 # tag=v3.2.0
+        with:
+          files: .

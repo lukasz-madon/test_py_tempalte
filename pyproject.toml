@@ -1,0 +1,214 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+###############################################################################
+#
+#                                   POETRY
+#
+###############################################################################
+
+[tool.poetry]
+name = "{{cookiecutter.repository}}"
+version = "0.0.0"
+description = "..."
+authors = ["{{cookiecutter.repository_owner}}"]
+maintainers = ["{{cookiecutter.repository_owner}}"]
+readme = "README.md"
+
+###############################################################################
+#
+#                               DEPENDENCIES
+#
+###############################################################################
+
+[tool.poetry.dependencies]
+python=">=3.9, <4.0"
+
+# A list of all of the optional dependencies, some of which are included in the
+# below `extras`. They can be opted in by apps.
+
+[tool.poetry.group.test.dependencies]
+pytest = { version = "^7.2.0" }
+pytest-cov = { version = "^4.0.0" }
+pytest-xdist = { version = "^3.0" }
+pytest-html = { version = "^3.1.1" }
+pytest-pretty-terminal = { version = "^1.1.0" }
+
+[tool.poetry.group.fix.dependencies]
+black = { version = "^23.0.0" }
+autoflake = { version = "^1.7.7" }
+docformatter = { version = "^1.5.0", extras=["tomli"] }
+tryceratops = { version = "^1.1.0" }
+
+[tool.poetry.group.lint.dependencies]
+ruff = { version = "^0.0.259" }
+pytype = { version = "^2023.0.0", python = ">=3.8,<3.11" }
+yamllint = { version = "^1.28.0" }
+
+[tool.poetry.group.report.dependencies]
+radon = { version = "^6.0.0" }
+vulture = { version = "^2.6" }
+cohesion = { version = "^1.0.0" }
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = { version = "^1.3.0" }
+mkdocs-material = { version = "^9.0.0" }
+mkdocstrings = { version = "^0.20.0" }
+mkdocstrings-python = { version = "^0.8.0" }
+mkdocs-literate-nav = { version = "^0.6.0" }
+mkdocs-section-index = { version = "^0.3.4" }
+mkdocs-gen-files = { version = "^0.4.0" }
+mkdocs-minify-plugin = { version = "^0.6.0" }
+interrogate = { version = "^1.5.0" }
+
+[tool.poetry.group.release.dependencies]
+python-semantic-release = { version = "^7.28.1" }
+
+[tool.poetry.group.hooks.dependencies]
+pre-commit = { version = "^3.0.0" }
+
+###############################################################################
+#
+#                                FIX SETTINGS
+#
+###############################################################################
+
+[tool.black]
+line-length = 79
+
+[tool.ruff]
+target-version = "py39"
+select = [
+  "F",
+  "E",
+  "W",
+  "I",
+  "N",
+  "D",
+  "UP",
+  "YTT",
+  "ANN",
+  "S",
+  "BLE",
+  "FBT",
+  "B",
+  "A",
+  "C4",
+  "DTZ",
+  "T10",
+  "ICN",
+  "INP",
+  "PIE",
+  "T20",
+  "PT",
+  "Q",
+  "RSE",
+  "RET",
+  "SLF",
+  "SIM",
+  "TCH",
+  "ARG",
+  "PTH",
+  "ERA",
+  "PL",
+  "TRY",
+  "RUF",
+]
+
+ignore = [
+  "ANN101",
+  "ANN102",
+  "ANN401",
+]
+
+line-length = 79
+format = "grouped"
+
+show-fixes = true
+show-source = true
+src = ["src", "test"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"test/**" = ["S101"]
+
+[tool.ruff.flake8-annotations]
+suppress-dummy-args = true
+
+[tool.ruff.flake8-pytest-style]
+parametrize-values-type = "tuple"
+
+[tool.ruff.pycodestyle]
+max-doc-length = 79
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.pylint]
+max-args = 6
+max-branches = 6
+max-returns = 6
+max-statements = 20
+
+[tool.docformatter]
+wrap-summaries = 79
+wrap-descriptions = 79
+
+###############################################################################
+#
+#                               REPORT SETTINGS
+#
+###############################################################################
+
+[tool.vulture]
+sort_by_size = true
+
+###############################################################################
+#
+#                               COVERAGE SETTINGS
+#
+###############################################################################
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+
+###############################################################################
+#
+#                             DOCS COVERAGE SETTINGS
+#
+###############################################################################
+
+[tool.interrogate]
+verbose = 2
+fail-under = 100
+exclude = [
+  "docs",
+  "build",
+  "test",
+  "src/{{cookiecutter.repository}}/_version.py",
+]
+
+###############################################################################
+#
+#                               RELEASE SETTINGS
+#
+###############################################################################
+
+[tool.semantic_release]
+version_variable = [
+  "src/{{cookiecutter.repository}}/_version.py:__version__",
+]
+version_toml = [
+    "pyproject.toml:tool.poetry.version"
+]
+branch = "main"
+major_on_zero = false
+
+build_command = false
+upload_to_repository = false
+upload_to_release = false
+
+commit_author = "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+commit_subject = "feat: release {version}"

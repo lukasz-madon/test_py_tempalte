@@ -1,0 +1,37 @@
+---
+name: Python Coverage
+description: Download (optionally) coverage artifacts, combine them and display results
+
+inputs:
+  upload-html:
+    description: Whether HTML report should be uploaded as an artifact
+    default: true
+  fail-under:
+    description: Fail under N% of coverage
+    default: 100
+
+outputs:
+  upload-html:
+    description: Whether HTML report was uploaded as an artifact
+    value: ${{ inputs.upload-html }}
+  fail-under:
+    description: Coverage treshold in % below which action will fail
+    value: ${{ inputs.fail-under }}
+
+runs:
+  using: composite
+  steps:
+    - name: Download coverage data.
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+    - name: Combine coverage & create HTML report
+      shell: bash
+      run: |
+        poetry run coverage combine --keep $(find . -type f -name ".coverage*")
+        poetry run coverage html --skip-empty
+        poetry run coverage report --fail-under=${{ inputs.fail-under }}
+    - name: Upload HTML report
+      if: ${{ inputs.upload-html }}
+      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      with:
+        name: coverage
+        path: htmlcov

@@ -1,0 +1,23 @@
+---
+actions:
+  - .github/**/*
+deps:
+  - renovate.json
+  - poetry.lock
+config:
+  - .editorconfig
+  - .yamllint.yml
+  - .gitignore
+  - pyproject.toml
+  - commitlint.config.js
+  - .pre-commit-config.yaml
+docs:
+  - README.md
+  - CONTRIBUTING.md
+  - CODE_OF_CONDUCT.md
+  - docs/**/*
+  - mkdocs.yml
+test:
+  - test/**/*
+src:
+  - src/**/*

@@ -1,0 +1,119 @@
+---
+fail_fast: true
+exclude: docs/gen_ref_pages.py
+repos:
+  - repo: local
+    hooks:
+      - id: poetry-check
+        verbose: true
+        name: Poetry Check
+        entry: poetry check
+        pass_filenames: false
+        language: system
+        stages:
+          - commit
+        always_run: true
+      - id: poetry-lock
+        verbose: true
+        name: Poetry Lock
+        entry: poetry lock
+        pass_filenames: false
+        language: system
+        stages:
+          - commit
+        always_run: true
+      - id: yaml-linter
+        verbose: true
+        name: YAML Linter
+        entry: poetry run yamllint
+        language: system
+        stages:
+          - commit
+        types:
+          - yaml
+      - id: python-autoflake
+        verbose: true
+        name: Python Autoflake Fixer
+        entry: poetry run autoflake --in-place
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-tryceratops
+        verbose: true
+        name: Python Tryceratops Fixer
+        entry: poetry run tryceratops --autofix
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+        require_serial: true
+      - id: python-docformatter
+        verbose: true
+        name: Python Docformatter Fixer
+        entry: poetry run docformatter --recursive --in-place
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-black
+        verbose: true
+        name: Python Black Fixer
+        entry: poetry run black
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-interrogate
+        verbose: true
+        name: Python Docstrings Coverage
+        entry: poetry run interrogate -c pyproject.toml
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-ruff
+        verbose: true
+        name: Python Ruff Linter
+        entry: poetry run ruff check --fix
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-pytype
+        verbose: true
+        name: Python Static Type Checker
+        entry: poetry run pytype
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+      - id: python-tests
+        verbose: true
+        name: Python Tests
+        entry: >
+          poetry run pytest -n auto --pretty --cov=src
+          --cov-fail-under=100 --cov-report=term-missing test
+        pass_filenames: false
+        language: system
+        stages:
+          - commit
+        types:
+          - python
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.3.0
+    hooks:
+      - id: commitlint
+        verbose: true
+        name: Commit Linter
+        additional_dependencies:
+          - "@commitlint/config-conventional"
+        stages:
+          - commit-msg
