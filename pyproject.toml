@@ -9,11 +9,11 @@ build-backend = "poetry.core.masonry.api"
 ###############################################################################
 
 [tool.poetry]
-name = "{{cookiecutter.repository}}"
+name = "test_py_tempalte"
 version = "0.0.0"
 description = "..."
-authors = ["{{cookiecutter.repository_owner}}"]
-maintainers = ["{{cookiecutter.repository_owner}}"]
+authors = ["lukasz-madon"]
+maintainers = ["lukasz-madon"]
 readme = "README.md"
 
 ###############################################################################
@@ -187,7 +187,7 @@ exclude = [
   "docs",
   "build",
   "test",
-  "src/{{cookiecutter.repository}}/_version.py",
+  "src/test_py_tempalte/_version.py",
 ]
 
 ###############################################################################
@@ -198,7 +198,7 @@ exclude = [
 
 [tool.semantic_release]
 version_variable = [
-  "src/{{cookiecutter.repository}}/_version.py:__version__",
+  "src/test_py_tempalte/_version.py:__version__",
 ]
 version_toml = [
     "pyproject.toml:tool.poetry.version"

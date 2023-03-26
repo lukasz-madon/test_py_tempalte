@@ -1,1 +1,1 @@
-# {{cookiecutter.repository}} tests
+# test_py_tempalte tests

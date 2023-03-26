@@ -1,1 +1,1 @@
-# {{cookiecutter.repository}}
+# test_py_tempalte
